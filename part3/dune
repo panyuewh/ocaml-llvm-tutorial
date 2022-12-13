@@ -1,0 +1,10 @@
+(include_subdirs unqualified)
+
+(executable
+ (name tutorial03)
+ (libraries 
+  llvm 
+  llvm.analysis
+  llvm.executionengine
+  llvm.target))
+

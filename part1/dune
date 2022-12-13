@@ -1,0 +1,12 @@
+(include_subdirs unqualified)
+
+(executable
+ (name tutorial01)
+ (libraries 
+  llvm 
+  llvm.analysis
+  llvm.executionengine
+  llvm.target
+  llvm.bitreader
+  llvm.bitwriter))
+

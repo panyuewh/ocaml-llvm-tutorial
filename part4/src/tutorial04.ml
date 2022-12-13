@@ -8,6 +8,9 @@ let add_target_triple triple llm =
 
   set_target_triple (Llvm_target.TargetMachine.triple llmachine) llm ;
   set_data_layout (Llvm_target.DataLayout.as_string lldly) llm ;
+  Printf.printf "lltarget: %s\n" (Llvm_target.Target.name lltarget);
+  Printf.printf "llmachine: %s\n" (Llvm_target.TargetMachine.triple llmachine);
+  Printf.printf "lldly: %s\n" (Llvm_target.DataLayout.as_string lldly) ;
   ()
 
 
@@ -25,8 +28,12 @@ let _ =
 
   let printf_ty = var_arg_function_type i32_t [| pointer_type i8_t |] in
   let printf = declare_function "printf" printf_ty llm in
-  add_function_attr printf Attribute.Nounwind ;
-  add_param_attr (param printf 0) Attribute.Nocapture ;
+  (* let nounwind = create_enum_attr llctx "nounwind" 0L in  
+  let nocapture = create_enum_attr llctx "nocapture" 0L in   *)
+  let nounwind = attr_of_repr llctx (AttrRepr.Enum ((enum_attr_kind "nounwind"), 0L)) in  
+  let nocapture = attr_of_repr llctx (AttrRepr.Enum ((enum_attr_kind "nocapture"), 0L)) in  
+  add_function_attr printf nounwind AttrIndex.Function;
+  add_function_attr printf nocapture (AttrIndex.Param 0);
 
   let s = build_global_stringptr "Hello, world!\n" "" llbuilder in
   (* try commenting these two lines and compare the result *)
